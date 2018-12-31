@@ -57,7 +57,7 @@ def bilibili_get_recommand_video():
     video_list = []
     headers = HTTPAPI_HEADER.copy()
     headers['Cookie'] = _session['cookies']
-    response = requests.get("https://api.bilibili.com/recommend", headers = headers)
+    response = requests.get("https://api.bilibili.com/recommend?pagesize=100", headers = headers)
     vlist = response.json()['list']
     for vi in vlist:
         video_list.append(vi['aid'])
@@ -118,7 +118,9 @@ video_list = bilibili_get_recommand_video()
 watch_av, share_av, coins_av = bilibili_query_reward()
 
 while coins_av < 50:
-     if bilibili_donate_coin(random.choice(video_list)) == 0:
+    aid = random.choice(video_list)
+    if bilibili_donate_coin(aid) == 0:
+        bilibili_watch(aid)
         coins_av += 10
         
 if not watch_av:
